@@ -4,6 +4,12 @@ import org.springframework.context.ApplicationContext;
 import java.util.*;
 import com.beimi.core.engine.game.GameEngine;
 
+/**
+ * 贝密数据上下文
+ * 
+ * @author
+ *
+ */
 public class BMDataContext {
 	public static final String USER_SESSION_NAME = "user";
 	public static final String GUEST_USER = "guest";
@@ -21,6 +27,7 @@ public class BMDataContext {
 
 	public static final String BEIMI_SYSTEM_GAME_ROOMTITLE_DIC = "com.dic.game.room.title";
 	
+	/** 消息通知事件[给客户端用户发消息] */
 	public static final String BEIMI_MESSAGE_EVENT = "command" ;
 	public static final String BEIMI_PLAYERS_EVENT = "players" ;
 	
@@ -36,12 +43,12 @@ public class BMDataContext {
 
 	public static final String BEIMI_SYSTEM_ROOM = "room" ;
 	
-	
+	/** 系统orgi标识：beimi */
 	public static String SYSTEM_ORGI = "beimi" ;
 	
 	private static int WebIMPort = 9081 ;
-	
-	private static boolean imServerRunning = false ;			//IM服务状态
+	/** IM服务状态 :　运行:true, 未运行: false， 默认false */
+	private static boolean imServerRunning = false;
 	
 	private static ApplicationContext applicationContext ;
 
@@ -93,7 +100,12 @@ public class BMDataContext {
 		return BMDataContext.ConfigNames.AICONFIG.toString()+"_"+orgi ;
 	}
 	
-	
+	/**
+	 * 应用上下文
+	 * [spring {@link ApplicationContext}]
+	 * 
+	 * @return
+	 */
 	public static ApplicationContext getContext(){
 		return applicationContext ;
 	}
@@ -101,6 +113,7 @@ public class BMDataContext {
 	public static GameEngine getGameEngine(){
 		return gameEngine; 
 	}
+	
 	/**
 	 * 系统级的加密密码 ， 从CA获取
 	 * @return
@@ -109,9 +122,14 @@ public class BMDataContext {
 		return "BEIMI" ;
 	}
 	
+	/**
+	 * 命名空间？
+	 * 
+	 * @author
+	 *
+	 */
 	public enum NameSpaceEnum{
-		
-		SYSTEM("/bm/system") ,
+		SYSTEM("/bm/system"),
 		GAME("/bm/game");
 		
 		private String namespace ;
@@ -133,19 +151,40 @@ public class BMDataContext {
 		}
 	}
 	
+	/**
+	 * 模型类型枚举
+	 * [房间、大厅]
+	 * 
+	 * @author
+	 *
+	 */
 	public enum ModelType{
+		/** 房间  */
 		ROOM,
+		/** 大厅 */
 		HALL;
+		
 		public String toString(){
 			return super.toString().toLowerCase() ;
 		}
 	}
 	
+	/**
+	 * 行为记录类型
+	 * [补贴、转盘、签到、连续登录]
+	 * 
+	 * @author
+	 *
+	 */
 	public enum ActRecordType{
-		SUBSIDY,	//补贴
-		TURN,		//转盘
-		SIGN,		//签到
-		LOGIN;		//连续登录
+		/** 补贴 */
+		SUBSIDY,
+		/** 转盘 */
+		TURN,
+		/** 签到 */
+		SIGN,
+		/** 连续登录 */
+		LOGIN;
 		
 		public String toString(){
 			return super.toString().toLowerCase() ;
@@ -165,8 +204,18 @@ public class BMDataContext {
 		}
 	}
 	
+	/**
+	 * 用户数据操作事件类型
+	 * [保存、更新、删除]
+	 * 
+	 * @author
+	 *
+	 */
 	public enum UserDataEventType{
-		SAVE,UPDATE,DELETE;
+		SAVE,
+		UPDATE,
+		DELETE;
+		
 		public String toString(){
 			return super.toString().toLowerCase() ;
 		}
@@ -210,27 +259,56 @@ public class BMDataContext {
 		}
 	}
 	
+	/**
+	 * 游戏玩家类型枚举
+	 * 
+	 * @author
+	 *
+	 */
 	public enum PlayerTypeEnum{
-		AI,			//AI
-		NORMAL,		//普通玩家
-		OFFLINE,	//托管玩家
-		LEAVE;		//离开房间的玩家
+		/** AI[机器人]玩家  */
+		AI,
+		/** 普通玩家  */
+		NORMAL,
+		/** 托管玩家  */
+		OFFLINE,
+		/** 离开房间的玩家  */
+		LEAVE;
+		
 		public String toString(){
 			return super.toString().toLowerCase() ;
 		}
 	}
 	
+	/**
+	 * 游戏状态枚举
+	 * 
+	 * @author
+	 *
+	 */
 	public enum GameStatusEnum{
-		READY,			//AI
-		NOTREADY,		//普通玩家
+		/** 准备好了 */
+		READY,
+		/** 准备好 */
+		NOTREADY,
+		/** 管理[托管] */
 		MANAGED,
+		/** 游戏中 */
 		PLAYING,
-		TIMEOUT;		//登录会话过期
+		/** 登录会话过期 */
+		TIMEOUT;
+		
 		public String toString(){
 			return super.toString().toLowerCase() ;
 		}
 	}
 	
+	/**
+	 * 牌类型
+	 * 
+	 * @author 科
+	 *
+	 */
 	public enum CardsTypeEnum{
 		ONE(1),		//单张      3~K,A,2
 		TWO(2),		//一对	 3~K,A,2
@@ -321,7 +399,7 @@ public class BMDataContext {
 		}
 	}
 	/**
-	 * 收入类型 ， 1、充值，2、兑换、3、赢了，4、赠送，5、抽奖，6、接受赠与
+	 * 收入类型： 1、充值，2、兑换、3、赢了，4、赠送，5、抽奖，6、接受赠与
 	 */
 	public enum PVAInComeActionEnum{
 		RECHARGE,
@@ -337,7 +415,7 @@ public class BMDataContext {
 	}
 	
 	/**
-	 *  支出 1、输了，2、逃跑扣除、3、兑换扣除，4、送好友
+	 *  支出 ：1、输了，2、逃跑扣除、3、兑换扣除，4、送好友
 	 */
 	public enum PVAConsumeActionEnum{
 		LOST,

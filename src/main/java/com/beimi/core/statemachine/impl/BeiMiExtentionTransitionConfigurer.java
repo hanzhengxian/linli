@@ -4,6 +4,14 @@ import com.beimi.core.statemachine.action.Action;
 import com.beimi.core.statemachine.config.ExternalTransitionConfigurer;
 import com.beimi.core.statemachine.config.StateMachineTransitionConfigurer;
 
+/**
+ * 配置扩展过渡实现
+ * 
+ * @author 
+ *
+ * @param <T>
+ * @param <S>
+ */
 public class BeiMiExtentionTransitionConfigurer<T, S> implements ExternalTransitionConfigurer<T, S>{
 	private StateMachineTransitionConfigurer<T, S> configure ;
 	private T source = null , target = null ;

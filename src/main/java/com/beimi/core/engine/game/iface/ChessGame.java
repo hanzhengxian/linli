@@ -13,8 +13,10 @@ import com.beimi.web.model.PlayUserClient;
  *
  */
 public interface ChessGame {
+	
 	/**
-	 * 创建一局新游戏
+	 * 创建一局新游戏[发牌]
+	 * 
 	 * @return
 	 */
 	public Board process(List<PlayUserClient> playUsers , GameRoom gameRoom ,GamePlayway playway ,  String banker , int cardsnum) ;

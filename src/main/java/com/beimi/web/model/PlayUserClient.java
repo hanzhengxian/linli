@@ -18,6 +18,8 @@ import com.beimi.util.event.UserEvent;
 
 
 /**
+ * 游戏玩家对象
+ * 
  * @author jaddy0302 Rivulet User.java 2010-3-17
  * 
  */
@@ -26,14 +28,8 @@ import com.beimi.util.event.UserEvent;
 @Table(name = "bm_playuser")
 @org.hibernate.annotations.Proxy(lazy = false)
 public class PlayUserClient implements UserEvent ,Message, java.io.Serializable , Comparable<PlayUserClient>{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 
-	 */
     @Id
 	private String id = UKTools.getUUID().toLowerCase();
 	
@@ -59,8 +55,10 @@ public class PlayUserClient implements UserEvent ,Message, java.io.Serializable 
 	private boolean headimg ; 	//是否上传头像
 	
 	private String roomid ;		//加入的房间ID
-	private boolean roomready ;	//在房间中已经准备就绪
-	private boolean opendeal ;	//明牌
+	/** 在房间中已经准备就绪 ［是：true、否：false］ */
+	private boolean roomready ;	
+	/** 明牌［是：true、否：false］*/
+	private boolean opendeal ;
 	
 	private String gamestatus ;	//玩家在游戏中的状态 ： READY : NOTREADY : PLAYING ：MANAGED/托管
 	

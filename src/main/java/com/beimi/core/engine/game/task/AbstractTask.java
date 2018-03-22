@@ -10,6 +10,12 @@ import com.beimi.util.UKTools;
 import com.beimi.web.model.GamePlayway;
 import com.beimi.web.model.GameRoom;
 
+/**
+ * 任务抽象类
+ * 
+ * @author
+ *
+ */
 public abstract class AbstractTask implements ValueWithExpiryTime {
 
 	/**

@@ -16,6 +16,8 @@ import com.beimi.util.event.UserEvent;
 
 
 /**
+ * 玩家用户信息对象
+ * 
  * @author jaddy0302 Rivulet User.java 2010-3-17
  * 
  */
@@ -24,14 +26,8 @@ import com.beimi.util.event.UserEvent;
 @Table(name = "bm_playuser")
 @org.hibernate.annotations.Proxy(lazy = false)
 public class PlayUser implements UserEvent , java.io.Serializable{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 
-	 */
     @Id
 	private String id = UKTools.getUUID().toLowerCase();
 	

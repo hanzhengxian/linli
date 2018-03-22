@@ -64,7 +64,6 @@ public class PlayerCach implements PlayerCacheBean{
 	}
 	@Override
 	public long getSize() {
-		// TODO Auto-generated method stub
 		return getInstance().getMap(getName()).size();
 	}
 

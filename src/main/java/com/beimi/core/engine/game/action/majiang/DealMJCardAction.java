@@ -12,6 +12,7 @@ import com.beimi.web.model.GameRoom;
 
 /**
  * 抓牌
+ * 
  * @author iceworld
  *
  * @param <T>
@@ -29,4 +30,5 @@ public class DealMJCardAction<T,S> implements Action<T, S>{
 			}
 		}
 	}
+	
 }

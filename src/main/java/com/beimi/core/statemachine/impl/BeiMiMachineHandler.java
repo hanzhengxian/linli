@@ -7,6 +7,9 @@ import com.beimi.core.statemachine.action.Action;
 import com.beimi.core.statemachine.message.Message;
 
 /**
+ * 贝密状态机处理类
+ * <p>
+ * 用于处理游戏状态发生变化动作
  * 
  * @author chenghao
  *
@@ -18,12 +21,21 @@ public class BeiMiMachineHandler {
 	public BeiMiMachineHandler(BeiMiStateMachine<String,String> config){
 		this.config = config ;
 	}
+	
 	/**
 	 * Handle event with entity.
+	 * 
+	 * <p>
+	 * <ul>
+	 * <li>
 	 * 1、获得当前事件的Transition
+	 * <li>
 	 * 2、处理Action
+	 * <li>
 	 * 3、校验当前状态是否是从 上一个状态 转变来的（不做实现）
+	 * <li>
 	 * 4、变更状态到下一步
+	 *</ul>
 	 *
 	 * @param event the event
 	 * @param state the state
@@ -31,6 +43,7 @@ public class BeiMiMachineHandler {
 	 */
 	public boolean handleEventWithState(Message<String> event, String state) {
 		BeiMiExtentionTransitionConfigurer<String, String> transition = config.getTransitions().transition(state) ;
+		
 		if(transition!=null){
 			Action<String, String> action = transition.getAction() ;
 			if(action!=null){
@@ -47,6 +60,8 @@ public class BeiMiMachineHandler {
 				Logger.getLogger(this.getClass()).info("Transition's Action is null");
 			}
 		}
+		
 		return config!=null;
 	}
+	
 }

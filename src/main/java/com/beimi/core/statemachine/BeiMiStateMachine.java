@@ -5,10 +5,15 @@ import com.beimi.core.statemachine.config.StateMachineTransitionConfigurer;
 import com.beimi.core.statemachine.impl.BeiMiStateContext;
 import com.beimi.core.statemachine.impl.BeiMiTransitionConfigurer;
 
+/**
+ * 游戏状态机对象
+ * 
+ * @author 
+ *
+ * @param <T>
+ * @param <S>
+ */
 public class BeiMiStateMachine<T,S> {
-	/**
-	 * 
-	 */
 	private StateConfigurer<String,String> config = new BeiMiStateContext<String,String>();
 	private StateMachineTransitionConfigurer<T,S> transitions = new BeiMiTransitionConfigurer<T,S>() ;
 	

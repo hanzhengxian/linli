@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.beimi.core.BMDataContext;
 import com.beimi.util.CacheConfigTools;
 import com.beimi.util.GameUtils;
@@ -49,7 +50,14 @@ public class GuestPlayerController extends Handler{
 	
 	@Autowired
 	private TokenESRepository tokenESRes ;
-
+	
+	/**
+	 * 游客登陆
+	 * 
+	 * @param request
+	 * @param token
+	 * @return
+	 */
 	@RequestMapping
     public ResponseEntity<ResultData> guest(HttpServletRequest request , @Valid String token) {
 		PlayUserClient playUserClient = null ;
@@ -136,6 +144,7 @@ public class GuestPlayerController extends Handler{
 			playerResultData.setEnableai(aiConfig.isEnableai());
 			playerResultData.setWaittime(aiConfig.getWaittime());
 		}
+		System.out.println(JSON.toJSONString(playerResultData));
 		/**
 		 * 根据游戏配置 ， 选择 返回的 玩法列表
 		 */

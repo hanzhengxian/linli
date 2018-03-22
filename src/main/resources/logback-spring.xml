@@ -79,9 +79,20 @@
 	    </filter>  
     </appender>
     
-
+    <!--输出到控制台 ConsoleAppender--> 
+	<appender name="rootConsoleLog" class="ch.qos.logback.core.ConsoleAppender"> 
+		<!--展示格式 layout--> 
+		<layout class="ch.qos.logback.classic.PatternLayout"> 
+			<pattern>%d -1 %msg%n</pattern> 
+		</layout> 
+	</appender>
+	
+	<!-- 用于打印 Spring 在启动的时候初始化各个 Bean 的信息 -->
+	<logger name="org.springframework.web" level="DEBUG"/>
+		
     <!-- 日志输出级别 -->
     <root level="INFO">
+    	<appender-ref ref="rootConsoleLog" />
         <appender-ref ref="STDOUT" />
         <appender-ref ref="ERROR" />
         <appender-ref ref="INFO" />

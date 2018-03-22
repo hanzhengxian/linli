@@ -33,11 +33,18 @@ public class ActionTaskUtils {
 		return new CreateAutoTask(times , gameRoom , gameRoom.getOrgi()) ;
 	}
 	
+	/**
+	 * 发送信息至房间用户
+	 * 
+	 * @param event		发送信息事件
+	 * @param message	发送信息内容
+	 * @param gameRoom	游戏房间对象
+	 */
 	public static void sendEvent(String event, Message message,GameRoom gameRoom){
 		message.setCommand(event);
 		List<PlayUserClient> players = CacheHelper.getGamePlayerCacheBean().getCacheObject(gameRoom.getId(), gameRoom.getOrgi()) ;
 		for(PlayUserClient user : players){
-			BeiMiClient client = NettyClients.getInstance().getClient(user.getId()) ;
+			BeiMiClient client = NettyClients.getInstance().getClient(user.getId());
 			if(client!=null && online(user.getId(), user.getOrgi())){
 				client.getClient().sendEvent(BMDataContext.BEIMI_MESSAGE_EVENT, message);
 			}
@@ -45,17 +52,18 @@ public class ActionTaskUtils {
 	}
 	/**
 	 * 通知就绪
-	 * @param gameRoom
-	 * @param game
+	 * <p>
+	 * 判断房间中所有用户是否都已准备就绪，有，则进行发牌
+	 * 
+	 * @param gameRoom	游戏房间对象
+	 * @param game		具游戏类型实现类  {@link DizhuGame} {@link MaJiangGame}       
 	 */
 	public static void roomReady(GameRoom gameRoom, Game game){
-		/**
-		 * 
-		 */
 		boolean enough = false ;
 		List<PlayUserClient> playerList = CacheHelper.getGamePlayerCacheBean().getCacheObject(gameRoom.getId(), gameRoom.getOrgi()) ;
 		if(gameRoom.getPlayers() == playerList.size()){
 			gameRoom.setStatus(BeiMiGameEnum.READY.toString());
+			// 是否所有玩家都准备开始游戏［是：true、否：false］
 			boolean hasnotready = false ;
 			for(PlayUserClient player : playerList){
 				if(player.isRoomready() == false){
@@ -73,12 +81,12 @@ public class ActionTaskUtils {
 		}else{
 			gameRoom.setStatus(BeiMiGameEnum.WAITTING.toString());
 		}
+		
 		CacheHelper.getGameRoomCacheBean().put(gameRoom.getId(), gameRoom, gameRoom.getOrgi());
-		/**
-		 * 所有人都已经举手
-		 */
+		
+		// 所有人都已经举手, 由状态机异步进行发牌处理
 		if(enough == true){
-			game.change(gameRoom , BeiMiGameEvent.ENOUGH.toString());	//通知状态机 , 此处应由状态机处理异步执行
+			game.change(gameRoom , BeiMiGameEvent.ENOUGH.toString());	
 		}
 	}
 	
@@ -93,19 +101,25 @@ public class ActionTaskUtils {
 	}
 	
 	/**
-	 * 发送消息给 玩家
+	 * 发送消息给玩家
+	 * 
 	 * @param beiMiClient
 	 * @param event
 	 * @param gameRoom
 	 */
 	public static void sendPlayers(BeiMiClient beiMiClient , GameRoom gameRoom){
 		if(online(beiMiClient.getUserid() , beiMiClient.getOrgi())){
-			beiMiClient.getClient().sendEvent(BMDataContext.BEIMI_MESSAGE_EVENT, new GamePlayers(gameRoom.getPlayers() , CacheHelper.getGamePlayerCacheBean().getCacheObject(gameRoom.getId(), beiMiClient.getOrgi()), BMDataContext.BEIMI_PLAYERS_EVENT));
+			beiMiClient.getClient().sendEvent(
+					BMDataContext.BEIMI_MESSAGE_EVENT, 
+					new GamePlayers(gameRoom.getPlayers() , 
+							CacheHelper.getGamePlayerCacheBean().getCacheObject(gameRoom.getId(), 
+									beiMiClient.getOrgi()), BMDataContext.BEIMI_PLAYERS_EVENT));
 		}
 	}
 	
 	/**
 	 * 检查玩家是否在线
+	 * 
 	 * @param userid
 	 * @param orgi
 	 * @return
@@ -170,6 +184,7 @@ public class ActionTaskUtils {
 	
 	/**
 	 * 更新玩家状态
+	 * 
 	 * @param userid
 	 * @param orgi
 	 */
@@ -264,6 +279,7 @@ public class ActionTaskUtils {
 	
 	/**
 	 * 牌型识别
+	 * 
 	 * @param cards
 	 * @return
 	 */

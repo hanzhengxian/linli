@@ -4,6 +4,7 @@ import com.beimi.core.engine.game.Message;
 
 /**
  * 存储牌型
+ * 
  * @author iceworld
  *
  */

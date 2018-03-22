@@ -11,7 +11,8 @@ import com.beimi.util.cache.CacheHelper;
 import com.beimi.web.model.GameRoom;
 
 /**
- * 反底牌发给地主
+ * 把底牌发给地主
+ * 
  * @author iceworld
  *
  * @param <T>

@@ -11,7 +11,8 @@ import com.beimi.util.cache.hazelcast.impl.OnlineCache;
 import com.beimi.util.cache.hazelcast.impl.QueneCache;
 import com.beimi.util.cache.hazelcast.impl.SystemCache;
 /**
- * Hazlcast缓存处理实例类
+ * Hazlcast缓存实现类
+ * 
  * @author admin
  *
  */
@@ -22,7 +23,25 @@ public class HazlcastCacheHelper implements CacheInstance{
 	 *
 	 */
 	public enum CacheServiceEnum{
-		HAZLCAST_CLUSTER_AGENT_USER_CACHE, HAZLCAST_CLUSTER_AGENT_STATUS_CACHE, HAZLCAST_CLUSTER_QUENE_USER_CACHE,HAZLCAST_ONLINE_CACHE , GAME_PLAYERS_CACHE , HAZLCAST_CULUSTER_SYSTEM , HAZLCAST_GAMEROOM_CACHE , API_USER_CACHE , QUENE_CACHE, HAZLCAST_TASK_CACHE, HAZLCAST_GAME_CACHE;
+		HAZLCAST_CLUSTER_AGENT_USER_CACHE, 
+		HAZLCAST_CLUSTER_AGENT_STATUS_CACHE, 
+		HAZLCAST_CLUSTER_QUENE_USER_CACHE,
+		/** hazelcast集群系统数据缓存 */
+		HAZLCAST_CULUSTER_SYSTEM , 
+		HAZLCAST_ONLINE_CACHE , 
+		/** hazelcast任务缓存 */
+		HAZLCAST_TASK_CACHE, 
+		/** hazelcast游戏缓存 */
+		HAZLCAST_GAME_CACHE,
+		/** hazelcast游戏房间数据缓存 */
+		HAZLCAST_GAMEROOM_CACHE , 
+		/** 游戏玩家缓存？ */
+		GAME_PLAYERS_CACHE , 
+		/** IMR指令[用户？]缓存 */
+		API_USER_CACHE , 
+		/** 队列缓存 */
+		QUENE_CACHE;
+		
 		public String toString(){
 			return super.toString().toLowerCase();
 		}

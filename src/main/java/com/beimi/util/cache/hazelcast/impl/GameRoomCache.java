@@ -9,6 +9,12 @@ import org.springframework.stereotype.Service;
 import com.beimi.util.cache.CacheBean;
 import com.hazelcast.core.HazelcastInstance;
 
+/**
+ * 游戏房间缓存
+ * 
+ * @author
+ *
+ */
 @Service("game_room_cache")
 public class GameRoomCache implements CacheBean{
 	

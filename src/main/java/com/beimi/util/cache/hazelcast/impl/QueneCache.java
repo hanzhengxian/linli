@@ -15,6 +15,8 @@ import com.hazelcast.query.PagingPredicate;
 import com.hazelcast.query.SqlPredicate;
 
 /**
+ * 分布式队列缓存
+ * <p>
  * 主要用于游戏的撮合部分，游戏的玩法配置是系统级别个参数配置，
  * 代理和分销账号下的 只包含游戏玩家的业务数据，不包括系统级别的配置，无租户相关问题
  * @author iceworld
@@ -42,18 +44,22 @@ public class QueneCache{
 	public void put(GameRoom value, String orgi){
 		getInstance().getMap(this.getName()).put(value.getId() , value) ;
 	}
-
+	
+	/**
+	 * 获取可加入游戏房间
+	 * [大厅模式]
+	 * 
+	 * @param playway
+	 * @param orgi
+	 * @return
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public GameRoom poll(String playway , String orgi) {
 		GameRoom gameRoom = null;
-		/**
-		 * 从Map里获取 
-		 */
+		// 从Map里获取 
 		PagingPredicate<String, GameRoom> pagingPredicate = null ;
 		List gameRoomList = new ArrayList();
-		/**
-		 * 处理游戏房间
-		 */
+		// 处理游戏房间
 		if(!StringUtils.isBlank(playway)){
 			pagingPredicate = new PagingPredicate<String, GameRoom>(  new SqlPredicate( " playway = '" + playway + "'") , 5 );
 			gameRoomList.addAll((getInstance().getMap(this.getName())).values(pagingPredicate) ) ;
@@ -68,6 +74,7 @@ public class QueneCache{
 				}
 			}
 		}
+		
 		return gameRoom;
 	}
 	

@@ -3,6 +3,12 @@ package com.beimi.util.event;
 import org.springframework.data.elasticsearch.repository.ElasticsearchCrudRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/**
+ * 用户数据事件
+ * 
+ * @author
+ *
+ */
 @SuppressWarnings("rawtypes")
 public class UserDataEvent{
 	private long id ;

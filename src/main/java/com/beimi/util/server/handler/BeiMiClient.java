@@ -6,10 +6,17 @@ import java.util.Map;
 
 public class BeiMiClient{
 	private String token ;
+	/** 玩的方式 ？*/
 	private String playway ;
+	/**
+	 *	开放服务网关倡议（OSGi，Open Service Gateway Initiative）?
+	 *  [data:　beimi]
+	 **/
 	private String orgi ;
 	private String room ;
-	
+	/**
+	 * 心跳时间
+	 */
 	private long time ;
 	
 	private String userid ;

@@ -2,39 +2,29 @@ package com.beimi.core.engine.game.state;
 
 import com.beimi.web.model.GameRoom;
 
+/**
+ * 游戏事件
+ * @author
+ *
+ */
 public class GameEvent implements java.io.Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1606276594008150495L;
 	
-	public GameEvent(int players , int cardsnum , String orgi){
-		this.players = players ;
-		this.time = System.currentTimeMillis() ;
-		this.orgi = orgi ;
-		this.cardsnum = cardsnum ;
-	}
-	
-	public GameEvent(String roomid , String event , int players , int cardsnum , long time , String orgi){
-		this.roomid = roomid ;
-		this.event = event ;
-		this.players = players ;
-		this.time = time ;
-		this.orgi = orgi ;
-		this.cardsnum = cardsnum ;
-		
-	}
+	/** 房间号 */
 	public String roomid ;
+	/** 游戏事件，详见：{@link com.beimi.core.engine.game.BeiMiGameEvent} */
 	private String event ;
 	private String orgi ;
+	/** 游戏局数 */
 	private int cardsnum ;
 	private GameRoom gameRoom ;
 	
-	
-	private int index ; 	//当前玩家 顺序号
+	/** 当前玩家顺序号  */
+	private int index;
 	
 	private int players ;
 	private long time ;
+	
 	public String getRoomid() {
 		return roomid;
 	}
@@ -88,5 +78,22 @@ public class GameEvent implements java.io.Serializable {
 
 	public void setIndex(int index) {
 		this.index = index;
+	}
+	
+	public GameEvent(int players , int cardsnum , String orgi){
+		this.players = players ;
+		this.time = System.currentTimeMillis() ;
+		this.orgi = orgi ;
+		this.cardsnum = cardsnum ;
+	}
+	
+	public GameEvent(String roomid , String event , int players , int cardsnum , long time , String orgi){
+		this.roomid = roomid ;
+		this.event = event ;
+		this.players = players ;
+		this.time = time ;
+		this.orgi = orgi ;
+		this.cardsnum = cardsnum ;
+		
 	}
 }

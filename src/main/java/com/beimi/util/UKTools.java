@@ -197,27 +197,52 @@ public class UKTools {
 		}
 		return strb.toString() ;
 	}
+	
+	/**
+	 * Disruptor 发布
+	 * 
+	 * @param event
+	 * @param esRes
+	 * @param dbRes
+	 * @param command
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void published(UserEvent event , ElasticsearchCrudRepository esRes , JpaRepository dbRes , String command){
 		Disruptor<UserDataEvent> disruptor = (Disruptor<UserDataEvent>) BMDataContext.getContext().getBean("disruptor") ;
 		long seq = disruptor.getRingBuffer().next();
+		
 		UserDataEvent userDataEvent = disruptor.getRingBuffer().get(seq) ;
 		userDataEvent.setEvent(event);
 		userDataEvent.setDbRes(dbRes);
 		userDataEvent.setEsRes(esRes);
 		userDataEvent.setCommand(command);
+		
 		disruptor.getRingBuffer().publish(seq);
 	}
 	
+	/**
+	 * Disruptor 发布
+	 * 
+	 * @param event
+	 * @param esRes
+	 * @param dbRes
+	 */
 	@SuppressWarnings({ "rawtypes"})
 	public static void published(UserEvent event , ElasticsearchCrudRepository esRes , JpaRepository dbRes){
 		published(event, esRes, dbRes , BMDataContext.UserDataEventType.SAVE.toString());
 	}
 	
+	/**
+	 * Disruptor 发布
+	 * 
+	 * @param event
+	 * @param esRes
+	 */
 	@SuppressWarnings({ "rawtypes"})
 	public static void published(UserEvent event , ElasticsearchCrudRepository esRes){
 		published(event, esRes, null , BMDataContext.UserDataEventType.SAVE.toString());
 	}
+	
 	/**
 	 * 
 	 * @param request

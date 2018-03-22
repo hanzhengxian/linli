@@ -18,16 +18,28 @@ import com.beimi.web.model.GameRoom;
 import com.beimi.web.model.PlayUserClient;
 
 /**
- * 牌局，用于描述当前牌局的内容 ， 
+ * 麻将牌局
+ * <p>
+ * 用于描述当前牌局的内容，实现麻将逻辑
+ * <ul>
+ * <li> 
  * 1、随机排序生成的 当前 待起牌（麻将、德州有/斗地主无）
+ * <li>
  * 2、玩家 手牌
+ * <li>
  * 3、玩家信息
+ * <li>
  * 4、当前牌
+ * <li>
  * 5、当前玩家
+ * <li>
  * 6、房间/牌桌信息
+ * <li>
  * 7、其他附加信息
+ * </ul>
  * 数据结构内存占用 78 byte ， 一副牌序列化到 数据库 占用的存储空间约为 78 byt， 数据库字段长度约为 20
- *
+ * </p>
+ * 
  * @author iceworld
  *
  */

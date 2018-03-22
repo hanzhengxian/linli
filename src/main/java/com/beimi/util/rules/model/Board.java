@@ -9,7 +9,51 @@ import com.beimi.web.model.GamePlayway;
 import com.beimi.web.model.GameRoom;
 import com.beimi.web.model.PlayUserClient;
 
+/**
+ * 牌局抽象类
+ * 
+ * @author
+ *
+ */
 public abstract class Board implements Message,java.io.Serializable {
+	private static final long serialVersionUID = 1L;
+	
+	private String id ;
+	
+	private byte[] cards;	//4个Bit描述一张牌，麻将：136+2/2 = 69 byte ; 扑克 54/2 = 27 byte 
+	private Player[] players;//3~10人(4 byte)
+	
+	private List<Byte>  deskcards ;
+	
+	private TakeCards last;
+	
+	private boolean finished ;
+	
+	private List<Byte> history = new ArrayList<Byte>();
+	
+	private String winner ;		//赢的玩家
+	
+	private NextPlayer nextplayer ;
+	
+	private String command ;
+	
+	private String room ;		//房间ID（4 byte）
+	/** 底牌 */
+	private byte[] lasthands;
+	
+	private byte[] powerful ;	//癞子 ， 麻将里的 单张癞子 ， 地主里的 天地癞子
+	
+	private int position ;		//地主牌
+	
+	private boolean docatch ;	//叫地主 OR 抢地主
+	/** 倍数， 默认：1*/
+	private int ratio = 1;
+	private boolean added ;			//已翻倍
+	
+	// 庄家|地主
+	private String banker ;
+	private String currplayer ;	//当前出牌人
+	private byte currcard ;		//当前出牌
 	
 	/**
 	 * @return
@@ -57,6 +101,7 @@ public abstract class Board implements Message,java.io.Serializable {
 	
 
 	public abstract Player nextPlayer(int index);
+	
 	/**
 	 * 玩家随机出牌，能管住当前出牌的 最小牌
 	 * @param player
@@ -107,47 +152,6 @@ public abstract class Board implements Message,java.io.Serializable {
 	 * @return
 	 */
 	public abstract TakeCards takecard(Player player , TakeCards last) ;
-	
-	
-	private static final long serialVersionUID = 1L;
-	/**
-	 * 
-	 */
-	
-	private String id ;
-	
-	private byte[] cards;	//4个Bit描述一张牌，麻将：136+2/2 = 69 byte ; 扑克 54/2 = 27 byte 
-	private Player[] players;//3~10人(4 byte)
-	
-	private List<Byte>  deskcards ;
-	
-	private TakeCards last;
-	
-	private boolean finished ;
-	
-	private List<Byte> history = new ArrayList<Byte>();
-	
-	private String winner ;		//赢的玩家
-	
-	private NextPlayer nextplayer ;
-	
-	private String command ;
-	
-	private String room ;		//房间ID（4 byte）
-	
-	private byte[] lasthands ;	//底牌
-	
-	private byte[] powerful ;	//癞子 ， 麻将里的 单张癞子 ， 地主里的 天地癞子
-	
-	private int position ;		//地主牌
-	
-	private boolean docatch ;	//叫地主 OR 抢地主
-	private int ratio = 1;			//倍数
-	private boolean added ;			//已翻倍
-	
-	private String banker ;		//庄家|地主
-	private String currplayer ;	//当前出牌人
-	private byte currcard ;		//当前出牌
 	
 	/**
 	 * 找到玩家数据

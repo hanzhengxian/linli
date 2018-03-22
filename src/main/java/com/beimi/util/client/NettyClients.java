@@ -2,7 +2,12 @@ package com.beimi.util.client;
 
 import com.beimi.util.server.handler.BeiMiClient;
 
-
+/**
+ * Netty Client管理
+ * 
+ * @author 
+ *
+ */
 public class NettyClients {
 	
 	

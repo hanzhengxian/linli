@@ -17,6 +17,7 @@ import com.beimi.web.model.GameRoom;
  *
  */
 public class PlayMJCardsAction<T,S> implements Action<T, S>{
+	
 	@Override
 	public void execute(Message<T> message , BeiMiExtentionTransitionConfigurer<T,S> configurer) {
 		String room = (String)message.getMessageHeaders().getHeaders().get("room") ;
@@ -33,4 +34,5 @@ public class PlayMJCardsAction<T,S> implements Action<T, S>{
 			}
 		}
 	}
+	
 }

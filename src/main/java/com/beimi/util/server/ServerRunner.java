@@ -9,7 +9,13 @@ import com.beimi.core.BMDataContext;
 import com.beimi.util.server.handler.GameEventHandler;
 import com.corundumstudio.socketio.SocketIONamespace;
 import com.corundumstudio.socketio.SocketIOServer;
-  
+
+/**
+ * websocket server runner
+ * 
+ * @author 科
+ *
+ */
 @Component  
 public class ServerRunner implements CommandLineRunner {  
     private final SocketIOServer server;

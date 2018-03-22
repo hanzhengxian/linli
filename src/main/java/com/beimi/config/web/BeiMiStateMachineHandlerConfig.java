@@ -9,6 +9,12 @@ import com.beimi.config.web.model.Game;
 import com.beimi.core.statemachine.BeiMiStateMachine;
 import com.beimi.core.statemachine.impl.BeiMiMachineHandler;
 
+/**
+ * 游戏状态机处理实现配置类
+ *
+ * @author
+ *
+ */
 @Configuration
 public class BeiMiStateMachineHandlerConfig {
 	

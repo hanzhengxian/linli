@@ -155,11 +155,12 @@ public class SysDicController extends Handler{
     
     @RequestMapping("/dicitem/batsave")
     @Menu(type = "admin" , subtype = "sysdic")
-    public ModelAndView dicitembatsave(HttpServletRequest request ,@Valid SysDic sysDic , @Valid String content , @Valid String p) {
-    	String[] dicitems = content.split("[\n\r\n]") ;
+    public ModelAndView dicitembatsave(HttpServletRequest request ,@Valid SysDic sysDic , 
+    		@Valid String content , @Valid String p) {
+    	String[] dicitems = content.split("[\n\r\n]");
 		int count = 0 ;
 		for(String dicitem : dicitems){
-			String[] dicValues = dicitem.split("[\t, ;]{1,}") ;
+			String[] dicValues = dicitem.split("[\t, ;]{1,}");
 			if(dicValues.length == 2 && dicValues[0].length()>0 && dicValues[1].length() >0){
 				SysDic dic = new SysDic() ;
 				dic.setOrgi(super.getOrgi(request));

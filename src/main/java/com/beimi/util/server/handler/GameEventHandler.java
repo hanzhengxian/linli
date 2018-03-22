@@ -41,6 +41,11 @@ public class GameEventHandler
         this.server = server ;
     }  
     
+    /**
+     * websocket connection
+     * 
+     * @param client
+     */
     @OnConnect  
     public void onConnect(SocketIOClient client)  
     {  
@@ -53,7 +58,12 @@ public class GameEventHandler
 		}
     }  
     
-  //添加@OnDisconnect事件，客户端断开连接时调用，刷新客户端信息  
+    /**
+     * 添加@OnDisconnect事件，客户端断开连接时调用，刷新客户端信息  
+     * [退出登录]
+     * 
+     * @param client
+     */
     @OnDisconnect  
     public void onDisconnect(SocketIOClient client)  
     {  
@@ -83,7 +93,17 @@ public class GameEventHandler
     	}
     }  
     
-  //抢地主事件
+    /**
+     * 进入游戏房间
+     * <p>
+     * [启动房间后，会启动倒时任务，到时后会自动加入AI机器人]
+     * {"token":"308763e20d61441db23722e6da785343","playway":"402888815e21d735015e21d995680000",
+     * "orgi":"beimi","extparams":{"gametype":"dizhu","playway":"402888815e21d735015e21d995680000"}}
+     * 
+     * @param client
+     * @param request
+     * @param data
+     */
     @OnEvent(value = "joinroom")   
     public void onJoinRoom(SocketIOClient client , AckRequest request, String data)  
     {  
@@ -97,7 +117,7 @@ public class GameEventHandler
 			 *    b、将token对应玩家加入到房间
 			 *    c、如果房间凑齐了玩家，则将房间从等待撮合队列中移除，放置到游戏中的房间信息，如果未凑齐玩家，继续扔到队列
 			 *    d、通知房间的所有人，有新玩家加入
-			 *    e、超时处理，增加AI进入房价
+			 *    e、超时处理，增加AI进入房间
 			 *    f、事件驱动
 			 *    g、定时器处理
 			 * 2、房卡房间处理
@@ -108,33 +128,42 @@ public class GameEventHandler
 			if(beiMiClient!=null && !StringUtils.isBlank(token) && (userToken = (Token) CacheHelper.getApiUserCacheBean().getCacheObject(token, beiMiClient.getOrgi()))!=null){
 				//鉴权完毕
 				PlayUserClient userClient = (PlayUserClient) CacheHelper.getApiUserCacheBean().getCacheObject(userToken.getUserid(), userToken.getOrgi()) ;
+				
 				beiMiClient.setClient(client);
 				beiMiClient.setUserid(userClient.getId());
 				beiMiClient.setSession(client.getSessionId().toString());
-				/**
-				 * 心跳时间
-				 */
+				// 心跳时间
 				beiMiClient.setTime(System.currentTimeMillis());
+				
 				NettyClients.getInstance().putClient(userClient.getId(), beiMiClient);
 				
-				/**
-				 * 更新当前玩家状态，在线|离线
-				 */
+				// 更新当前玩家状态，在线|离线
 				userClient.setOnline(true);
 				
-				/**
-				 * 更新状态
-				 */
-				ActionTaskUtils.updatePlayerClientStatus(userClient, BMDataContext.PlayerTypeEnum.NORMAL.toString());
+				// 更新状态
+				ActionTaskUtils.updatePlayerClientStatus(userClient, 
+						BMDataContext.PlayerTypeEnum.NORMAL.toString());
 				
-				UKTools.published(userClient,BMDataContext.getContext().getBean(PlayUserClientESRepository.class), BMDataContext.getContext().getBean(PlayUserClientRepository.class));
+				//玩家用户数据保存发布至Disruptor缓存队列
+				UKTools.published(userClient, 
+						BMDataContext.getContext().getBean(PlayUserClientESRepository.class), 
+						BMDataContext.getContext().getBean(PlayUserClientRepository.class));
 				
-				BMDataContext.getGameEngine().gameRequest(userToken.getUserid(), beiMiClient.getPlayway(), beiMiClient.getRoom(), beiMiClient.getOrgi(), userClient , beiMiClient) ;
+				BMDataContext.getGameEngine().gameRequest(userToken.getUserid(), 
+						beiMiClient.getPlayway(), beiMiClient.getRoom(), beiMiClient.getOrgi(), 
+						userClient , beiMiClient);
 			}
 		}
     }
     
-  //抢地主事件
+    /**
+     * 判断游戏状态
+     * [进入房间前请求]
+     * {"token":"308763e20d61441db23722e6da785343","orgi":"beimi"}
+     * 
+     * @param client
+     * @param data
+     */
     @OnEvent(value = "gamestatus")   
     public void onGameStatus(SocketIOClient client , String data)  
     {  
@@ -168,7 +197,12 @@ public class GameEventHandler
 		client.sendEvent(BMDataContext.BEIMI_GAMESTATUS_EVENT, gameStatus);
     }
       
-    //抢地主事件
+    /**
+     * 抢地主事件
+     * 
+     * @param client
+     * @param data
+     */
     @OnEvent(value = "docatch")   
     public void onCatch(SocketIOClient client , String data)  
     {  
@@ -184,7 +218,12 @@ public class GameEventHandler
 		}
     }
     
-    //不抢/叫地主事件
+    /**
+     * 不抢/叫地主事件
+     * 
+     * @param client
+     * @param data
+     */
     @OnEvent(value = "giveup")   
     public void onGiveup(SocketIOClient client , String data)  
     {  
@@ -200,7 +239,10 @@ public class GameEventHandler
 		}
     }
     
-  //不抢/叫地主事件
+    /**
+     * 出牌提示
+     * 
+     */
     @OnEvent(value = "cardtips")   
     public void onCardTips(SocketIOClient client , String data)  
     {  
@@ -217,7 +259,12 @@ public class GameEventHandler
     }
     
     
-    //出牌
+    /**
+     * 玩家出牌
+     * 
+     * @param client
+     * @param data
+     */
     @OnEvent(value = "doplaycards")   
     public void onPlayCards(SocketIOClient client , String data)  
     {  
@@ -238,7 +285,12 @@ public class GameEventHandler
 		}
     }
     
-    //出牌
+    /**
+     * 不出牌
+     * 
+     * @param client
+     * @param data
+     */
     @OnEvent(value = "nocards")   
     public void onNoCards(SocketIOClient client , String data)  
     {  
@@ -270,7 +322,13 @@ public class GameEventHandler
 		}
     }
     
-    //出牌
+    /**
+     * 操作操作
+     * [碰、杠]
+     * 
+     * @param client
+     * @param data
+     */
     @OnEvent(value = "selectaction")   
     public void onActionEvent(SocketIOClient client , String data)  
     {  
@@ -286,7 +344,13 @@ public class GameEventHandler
 		}
     }
     
-    //抢地主事件
+    /**
+     * 继续游戏
+     * [明牌开始]
+     * 
+     * @param client
+     * @param data
+     */
     @OnEvent(value = "restart")   
     public void onRestart(SocketIOClient client , String data)  
     {  
@@ -302,7 +366,12 @@ public class GameEventHandler
 		}
     }
     
-  //抢地主事件
+    /**
+     * 开始游戏[准备]
+     * 
+     * @param client
+     * @param data
+     */
     @OnEvent(value = "start")   
     public void onStart(SocketIOClient client , String data)  
     {  
@@ -335,7 +404,13 @@ public class GameEventHandler
 		}
     }
     
-    //玩家离开
+    /**
+     * 玩家离开
+     * [从一个游戏类型进入另一个游戏类型]
+     * 
+     * @param client
+     * @param data
+     */
     @OnEvent(value = "leave")   
     public void onLeave(SocketIOClient client , String data)  
     {  
@@ -380,7 +455,13 @@ public class GameEventHandler
     }
     
     
-  //抢地主事件
+    /**
+     * 加入房间
+     * [房卡模式]
+     * 
+     * @param client
+     * @param data
+     */
     @OnEvent(value = "searchroom")   
     public void onSearchRoom(SocketIOClient client , String data)  
     {  

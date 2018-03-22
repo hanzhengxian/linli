@@ -10,16 +10,18 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+/**
+ * 玩游戏方式对象
+ * 
+ * @author
+ *
+ */
 @Entity
 @Table(name = "bm_game_playway")
 @org.hibernate.annotations.Proxy(lazy = false)
 public class GamePlayway implements java.io.Serializable{
-	
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8988042477190235024L;
+	
 	private String id ;
 	private String name ;
 	private String code ;
@@ -39,16 +41,16 @@ public class GamePlayway implements java.io.Serializable{
 	private int score;		//底分
 	private int mincoins ;	//最小金币数量
 	private int maxcoins ;	//最大金币数量
-	
-	private boolean wind ;	//有无风
+	/** 有无风 ，　有：true、无：false */
+	private boolean wind ;
 	
 	private int shuffletimes	;	//洗牌次数
 	
 	
 	private String powerful ;	//癞子生成规则  ， 
 	
-	
-	private int cardsnum ;	//每个玩家获牌数量
+	/** 每个玩家获牌数量 */
+	private int cardsnum;
 	
 	private boolean changecard ;	//换牌
 	
@@ -58,9 +60,10 @@ public class GamePlayway implements java.io.Serializable{
 	private Date updatetime ;
 	private String orgi ;
 	private String area ;
-	
-	private String game ;	//游戏类型 ： 麻将：地主：德州
-	private int players ;	//游戏人数
+	/** 游戏类型 ： 麻将、地主、德州  */
+	private String game;
+	/** 游戏人数  */
+	private int players;
 	
 	private int numofgames ;//局数 ， 大厅游戏为 0 表示 无限
 	

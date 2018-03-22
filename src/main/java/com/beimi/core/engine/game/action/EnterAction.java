@@ -14,6 +14,7 @@ import com.beimi.web.model.GameRoom;
 
 /**
  * 创建房间的人，房卡模式下的 房主， 大厅模式下的首个进入房间的人
+ * 
  * @author iceworld
  *
  */

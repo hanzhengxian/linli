@@ -47,13 +47,32 @@ public class GameEngine {
 	@Resource
 	private KieSession kieSession;
 	
-	public void gameRequest(String userid ,String playway , String room , String orgi , PlayUserClient userClient , BeiMiClient beiMiClient ){
-		GameEvent gameEvent = gameRequest(userClient.getId(), beiMiClient.getPlayway(), beiMiClient, beiMiClient.getOrgi(), userClient) ;
+	/**
+	 * 游戏请求
+	 * <p>
+	 * <ul>
+	 * <li>
+	 * 1、玩家加入房间
+	 * <li>
+	 * 2、通知房间其他用户有新成员加入
+	 * <li>
+	 * 3、判断是否已[发送恢复连接通知消息]/未[建立状态机]在游戏中处理
+	 * </ul>
+	 * 
+	 * @param userid
+	 * @param playway
+	 * @param room
+	 * @param orgi
+	 * @param userClient
+	 * @param beiMiClient
+	 */
+	public void gameRequest(String userid ,String playway, String room, String orgi, 
+			PlayUserClient userClient , BeiMiClient beiMiClient ){
+		GameEvent gameEvent = gameRequest(userClient.getId(), beiMiClient.getPlayway(), 
+				beiMiClient, beiMiClient.getOrgi(), userClient);
 		if(gameEvent != null){
-			/**
-			 * 举手了，表示游戏可以开始了
-			 */
-			if(userClient!=null){
+			// 举手了，表示游戏可以开始了
+			if(userClient != null){
 				userClient.setGamestatus(BMDataContext.GameStatusEnum.READY.toString());
 			}
 
@@ -63,15 +82,12 @@ public class GameEngine {
 			 * 2、给当前新加入的玩家发送房间中所有玩家信息（不包含隐私信息，根据业务需求，修改PlayUserClient的字段，剔除掉隐私信息后发送）
 			 */
 			ActionTaskUtils.sendEvent("joinroom", new JoinRoom(userClient, gameEvent.getIndex(), gameEvent.getGameRoom().getPlayers() , gameEvent.getGameRoom()) , gameEvent.getGameRoom());
-			/**
-			 * 发送给单一玩家的消息
-			 */
+			// 发送给单一玩家的消息
 			ActionTaskUtils.sendPlayers(beiMiClient, gameEvent.getGameRoom());
-			/**
-			 * 当前是在游戏中还是 未开始
-			 */
+			
+			// 当前是在游戏中还是未开始
 			Board board = (Board) CacheHelper.getBoardCacheBean().getCacheObject(gameEvent.getRoomid(), gameEvent.getOrgi());
-			if(board !=null){
+			if(board != null){
 				Player currentPlayer = null;
 				for(Player player : board.getPlayers()){
 					if(player.getPlayuser().equals(userClient.getId())){
@@ -83,34 +99,49 @@ public class GameEngine {
 					if((board.getLast()!=null && board.getLast().getUserid().equals(currentPlayer.getPlayuser())) || (board.getLast() == null && board.getBanker().equals(currentPlayer.getPlayuser()))){
 						automic = true ;
 					}
-					ActionTaskUtils.sendEvent("recovery", new RecoveryData(currentPlayer , board.getLasthands() , board.getNextplayer()!=null ? board.getNextplayer().getNextplayer() : null , 25 , automic , board) , gameEvent.getGameRoom());
+					// 恢复连接发送信息给房间用户
+					ActionTaskUtils.sendEvent(
+							"recovery",
+							new RecoveryData(currentPlayer, board.getLasthands(), 
+									board.getNextplayer()!=null ? board.getNextplayer().getNextplayer() : null , 
+									25 , automic , board), 
+							gameEvent.getGameRoom());
 				}
 			}else{
-				//通知状态
-				GameUtils.getGame(beiMiClient.getPlayway() , gameEvent.getOrgi()).change(gameEvent);	//通知状态机 , 此处应由状态机处理异步执行
+				//不在游戏中通知状态机 , 此处应由状态机处理异步执行
+				GameUtils.getGame(beiMiClient.getPlayway(), gameEvent.getOrgi()).change(gameEvent);
 			}
 		}
 	}
 	
 	/**
+	 * 玩家加入游戏房间[加入已有房间、创建新房间]
+	 * <p>
 	 * 玩家房间选择， 新请求，游戏撮合， 如果当前玩家是断线重连， 或者是 退出后进入的，则第一步检查是否已在房间
 	 * 如果已在房间，直接返回
+	 * 
 	 * @param userid
 	 * @param orgi
 	 * @return
 	 */
-	public GameEvent gameRequest(String userid ,String playway , BeiMiClient beiMiClient , String orgi , PlayUserClient playUser){
-		GameEvent gameEvent = null ;
+	public GameEvent gameRequest(String userid, String playway, BeiMiClient beiMiClient, String orgi, PlayUserClient playUser){
 		String roomid = (String) CacheHelper.getRoomMappingCacheBean().getCacheObject(userid, orgi) ;
 		GamePlayway gamePlayway = (GamePlayway) CacheHelper.getSystemCacheBean().getCacheObject(playway, orgi) ;
+		// 需排队
 		boolean needtakequene = false;
-		if(gamePlayway!=null){
+		GameEvent gameEvent = null ;
+		
+		if(gamePlayway != null){
 			gameEvent = new GameEvent(gamePlayway.getPlayers() , gamePlayway.getCardsnum() , orgi) ;
 			GameRoom gameRoom = null ;
-			if(!StringUtils.isBlank(roomid) && CacheHelper.getGameRoomCacheBean().getCacheObject(roomid, orgi)!=null){//
+			
+			if(!StringUtils.isBlank(roomid) 
+					&& CacheHelper.getGameRoomCacheBean().getCacheObject(roomid, orgi) != null){//
 				gameRoom = (GameRoom) CacheHelper.getGameRoomCacheBean().getCacheObject(roomid, orgi) ;		//直接加入到 系统缓存 （只有一个地方对GameRoom进行二次写入，避免分布式锁）
 			}else{
-				if(beiMiClient.getExtparams()!=null && BMDataContext.BEIMI_SYSTEM_ROOM.equals(beiMiClient.getExtparams().get("gamemodel"))){	//房卡游戏 , 创建ROOM
+				//房卡游戏 , 创建ROOM
+				if(beiMiClient.getExtparams()!=null 
+						&& BMDataContext.BEIMI_SYSTEM_ROOM.equals(beiMiClient.getExtparams().get("gamemodel"))){
 					gameRoom = this.creatGameRoom(gamePlayway, userid , true , beiMiClient) ;
 				}else{	//
 					/**
@@ -132,26 +163,24 @@ public class GameEngine {
 						}
 					}
 					
-					if(gameRoom==null){	//无房间 ， 需要
+					//无房间,创建新房间
+					if(gameRoom == null){
 						gameRoom = this.creatGameRoom(gamePlayway, userid , false , beiMiClient) ;
 					}else{
-						playUser.setPlayerindex(System.currentTimeMillis());//从后往前坐，房主进入以后优先坐在 首位
-						needtakequene =  true ;
+						// 从后往前坐，房主进入以后优先坐在首位
+						playUser.setPlayerindex(System.currentTimeMillis());
+						// 需要排队
+						needtakequene =  true;
 					}
 				}
 			}
-			if(gameRoom!=null){
-				/**
-				 * 设置游戏当前已经进行的局数
-				 */
+			
+			if(gameRoom != null){
+				// 设置游戏当前已经进行的局数
 				gameRoom.setCurrentnum(0);
-				/**
-				 * 更新缓存
-				 */
+				// 更新缓存
 				CacheHelper.getGameRoomCacheBean().put(gameRoom.getId(), gameRoom, orgi);
-				/**
-				 * 如果当前房间到达了最大玩家数量，则不再加入到 撮合队列
-				 */
+				// 如果当前房间到达了最大玩家数量，则不再加入到撮合队列
 				List<PlayUserClient> playerList = CacheHelper.getGamePlayerCacheBean().getCacheObject(gameRoom.getId(), gameRoom.getOrgi()) ;
 				if(playerList.size() == 0){
 					gameEvent.setEvent(BeiMiGameEvent.ENTER.toString());
@@ -161,30 +190,41 @@ public class GameEngine {
 				gameEvent.setGameRoom(gameRoom);
 				gameEvent.setRoomid(gameRoom.getId());
 				
-				/**
-				 * 无条件加入房间
-				 */
+				// 玩家加入房间[数据保存、建立房间socket连接]
 				this.joinRoom(gameRoom, playUser, playerList);
 				
 				for(PlayUserClient temp : playerList){
 					if(temp.getId().equals(playUser.getId())){
+						// 设置当前玩家顺序号
 						gameEvent.setIndex(playerList.indexOf(temp)); break ;
 					}
 				}
+				
 				/**
 				 * 如果当前房间到达了最大玩家数量，则不再加入到 撮合队列
 				 */
 				if(playerList.size() < gamePlayway.getPlayers() && needtakequene == true){
-					CacheHelper.getQueneCache().put(gameRoom, orgi);	//未达到最大玩家数量，加入到游戏撮合 队列，继续撮合
+					// 未达到最大玩家数量，加入到游戏撮合 队列，继续撮合
+					CacheHelper.getQueneCache().put(gameRoom, orgi);
 				}
 				
 			}
 		}
+		
 		return gameEvent;
 	}
 	/**
-	 * 
 	 * 玩家加入房间
+	 * <p>
+	 * <ul>
+	 * <li>
+	 * 1、将玩家数据保存至房间玩家数组中
+	 * <li>
+	 * 2、游戏玩家加入房间socket
+	 * <li>
+	 * 3、将玩家数据保存加入游戏玩家缓存中[key为玩家id]
+	 * </ul>
+	 * 
 	 * @param gameRoom
 	 * @param playUser
 	 * @param playerList
@@ -196,6 +236,7 @@ public class GameEngine {
 				inroom = true ; break ;
 			}
 		}
+		
 		if(inroom == false){
 			playUser.setPlayerindex(System.currentTimeMillis());
 			playUser.setGamestatus(BMDataContext.GameStatusEnum.READY.toString());
@@ -203,9 +244,11 @@ public class GameEngine {
 			playUser.setRoomid(gameRoom.getId());
 			playUser.setRoomready(false);
 			
-			playerList.add(playUser) ;
+			playerList.add(playUser);
+			
 			NettyClients.getInstance().joinRoom(playUser.getId(), gameRoom.getId());
-			CacheHelper.getGamePlayerCacheBean().put(playUser.getId(), playUser, playUser.getOrgi()); //将用户加入到 room ， MultiCache
+			// 将用户加入到 room ， MultiCache
+			CacheHelper.getGamePlayerCacheBean().put(playUser.getId(), playUser, playUser.getOrgi());
 		}
 		
 		/**
@@ -238,11 +281,23 @@ public class GameEngine {
 	}
 	
 	/**
-	 * 抢地主，斗地主
-	 * @param roomid
-
-	 * @param orgi
-	 * @return
+	 * 开始游戏
+	 * <p>
+	 * <ul>
+	 * <li>
+	 * 设置玩家数据缓存
+	 * <li>
+	 * 如果房间所有人员准备就绪，发牌
+	 * <li>
+	 * Disruptor 发布方式进行玩家数据保存
+	 * <li>
+	 * 准备玩牌消息通知
+	 * </ul>
+	 * 
+	 * @param roomid		游戏房间id
+	 * @param playUser		游戏玩家用户
+	 * @param orgi			orgi {@link BMDataContext#SYSTEM_ORGI}
+	 * @param opendeal		是否明牌，是：true, 否：false
 	 */
 	public void startGameRequest(String roomid, PlayUserClient playUser, String orgi , boolean opendeal){
 		GameRoom gameRoom = (GameRoom) CacheHelper.getGameRoomCacheBean().getCacheObject(roomid, orgi) ;
@@ -252,18 +307,24 @@ public class GameEngine {
 				playUser.setOpendeal(opendeal);
 			}
 			
+			// 设置玩家数据缓存
 			CacheHelper.getGamePlayerCacheBean().put(playUser.getId(), playUser, playUser.getOrgi());
+			
+			// 如果房间所有人员准备就绪，发牌
 			ActionTaskUtils.roomReady(gameRoom, GameUtils.getGame(gameRoom.getPlayway() , gameRoom.getOrgi()));
 			
-			UKTools.published(playUser,BMDataContext.getContext().getBean(PlayUserClientESRepository.class));
+			// Disruptor 发布方式进行玩家数据保存
+			UKTools.published(playUser, BMDataContext.getContext().getBean(PlayUserClientESRepository.class));
 			
+			// 准备玩牌消息通知
 			ActionTaskUtils.sendEvent(playUser.getId(), new Playeready(playUser.getId() , "playeready"));
 		}
 	}
 	
 	
 	/**
-	 * 抢地主，斗地主
+	 * 提示出牌
+	 * 
 	 * @param roomid
 
 	 * @param orgi
@@ -302,6 +363,7 @@ public class GameEngine {
 	
 	/**
 	 * 出牌，并校验出牌是否合规
+	 * 
 	 * @param roomid
 	 * 
 	 * @param auto 是否自动出牌，超时/托管/AI会调用 = true
@@ -637,6 +699,7 @@ public class GameEngine {
 		}
 		return gameRoom;
 	}
+	
 	/**
 	 * 当前用户所在的房间
 	 * @param userid
@@ -664,14 +727,16 @@ public class GameEngine {
 			CacheHelper.getBoardCacheBean().delete(roomid, orgi) ;
 		}
 	}
+	
 	/**
 	 * 创建新房间 ，需要传入房间的玩法 ， 玩法定义在 系统运营后台，玩法创建后，放入系统缓存 ， 客户端进入房间的时候，传入 玩法ID参数
+	 * 
 	 * @param playway
 	 * @param userid
 	 * @return
 	 */
 	private  GameRoom creatGameRoom(GamePlayway playway , String userid , boolean cardroom , BeiMiClient beiMiClient){
-		GameRoom gameRoom = new GameRoom() ;
+		GameRoom gameRoom = new GameRoom();
 		gameRoom.setCreatetime(new Date());
 		gameRoom.setRoomid(UKTools.getUUID());
 		gameRoom.setUpdatetime(new Date());
@@ -683,18 +748,12 @@ public class GameEngine {
 		}
 		gameRoom.setPlayers(playway.getPlayers());
 		gameRoom.setCardsnum(playway.getCardsnum());
-		
 		gameRoom.setCurpalyers(1);
 		gameRoom.setCardroom(cardroom);
-		
 		gameRoom.setStatus(BeiMiGameEnum.CRERATED.toString());
-		
 		gameRoom.setCardsnum(playway.getCardsnum());
-		
 		gameRoom.setCurrentnum(0);
-		
 		gameRoom.setCreater(userid);
-		
 		gameRoom.setMaster(userid);
 		gameRoom.setNumofgames(playway.getNumofgames());   //无限制
 		gameRoom.setOrgi(playway.getOrgi());
@@ -750,4 +809,5 @@ public class GameEngine {
 //			UKTools.published(gameRoom, null, BMDataContext.getContext().getBean(GameRoomRepository.class) , BMDataContext.UserDataEventType.DELETE.toString());
 		}
 	}
+	
 }

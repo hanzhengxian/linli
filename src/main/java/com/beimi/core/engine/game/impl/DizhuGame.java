@@ -17,12 +17,23 @@ import com.beimi.web.model.GamePlayway;
 import com.beimi.web.model.GameRoom;
 import com.beimi.web.model.PlayUserClient;
 
+/**
+ * 斗地主游戏发牌实现类
+ * <p>
+ * 使用 0~53 数字代表54张牌, 按照 3~2[黑、红、梅、方]、小王、大王进行表示</br>
+ * 如：0~3表示黑3、红3、梅3、方3，依此类推，52为小王，53为大王
+ * 
+ * @author
+ *
+ */
 public class DizhuGame implements ChessGame{
+	
 	/**
 	 * 开始斗地主游戏
+	 * 
 	 * @return
 	 */
-	public Board process(List<PlayUserClient> playUsers , GameRoom gameRoom , GamePlayway playway ,String banker , int cardsnum){
+	public Board process(List<PlayUserClient> playUsers, GameRoom gameRoom, GamePlayway playway, String banker, int cardsnum){
 		gameRoom.setCurrentnum(gameRoom.getCurrentnum() + 1);
 		Board board = new DuZhuBoard() ;
 		board.setCards(null);
@@ -36,25 +47,30 @@ public class DizhuGame implements ChessGame{
 		for(int i = 0 ; i<playway.getShuffletimes() + 1; i++){
 			Collections.shuffle(temp);
 		}
+		
 		byte[] cards = new byte[54] ;
 		for(int i=0 ; i<temp.size() ; i++){
 			cards[i] = temp.get(i) ;
 		}
+		
 		board.setCards(cards);
-		
-		board.setRatio(15); 	//默认倍率 15
+		//默认倍率 15
+		board.setRatio(15);
 		int random = playUsers.size() * gameRoom.getCardsnum() ;
-		
-		board.setPosition((byte)new Random().nextInt(random));	//按照人数计算在随机界牌 的位置，避免出现在底牌里
+		//按照人数计算在随机界牌 的位置，避免出现在底牌里
+		board.setPosition((byte)new Random().nextInt(random));
 		
 		Player[] players = new Player[playUsers.size()];
 		
+		// 创建房间用户对应玩牌数据对象
 		int inx = 0 ;
 		for(PlayUserClient playUser : playUsers){
 			Player player = new Player(playUser.getId()) ;
 			player.setCards(new byte[cardsnum]);
 			players[inx++] = player ;
 		}
+		
+		// 把牌发给玩家
 		for(int i = 0 ; i<gameRoom.getCardsnum()*gameRoom.getPlayers(); i++){
 			int pos = i%players.length ; 
 			players[pos].getCards()[i/players.length] = cards[i] ;
@@ -62,10 +78,22 @@ public class DizhuGame implements ChessGame{
 				players[pos].setRandomcard(true);		//起到地主牌的人
 			}
 		}
+		
+		// 把玩家牌按从大到小排序
 		for(Player tempPlayer : players){
 			Arrays.sort(tempPlayer.getCards());
 			tempPlayer.setCards(GameUtils.reverseCards(tempPlayer.getCards()));
+			
+			StringBuilder sb = new StringBuilder();
+			for (byte bt : tempPlayer.getCards()) {
+				sb.append(bt).append(",");
+			}
+			if(tempPlayer.isBanker()) {
+				System.out.println("is Banker: ");
+			}
+			System.out.println(sb);
 		}
+		
 		board.setRoom(gameRoom.getId());
 		Player tempbanker = players[0];
 		if(!StringUtils.isBlank(banker)){
@@ -83,6 +111,7 @@ public class DizhuGame implements ChessGame{
 		if(tempbanker!=null){
 			board.setBanker(tempbanker.getPlayuser());
 		}
+		
 		return board;
 	}
 

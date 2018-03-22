@@ -13,6 +13,7 @@ import com.beimi.web.model.GameRoom;
 
 /**
  * 创建房间的人，房卡模式下的 房主， 大厅模式下的首个进入房间的人
+ * 
  * @author iceworld
  *
  */
@@ -20,7 +21,7 @@ public class JoinAction<T,S> implements Action<T, S>{
 	
 	/**
 	 * JOIN事件，检查是否 凑齐一桌子，如果凑齐了，直接开始，并取消计时器
-	 * 如果不够一桌子，啥也不做，等人活等计时器到事件
+	 * 如果不够一桌子，啥也不做，等人齐、等计时器到时间事件
 	 * 撮合成功的，立即开启游戏
 	 * 通知所有成员的消息在 GameEventHandler里处理了
 	 * 
@@ -38,4 +39,5 @@ public class JoinAction<T,S> implements Action<T, S>{
 			}
 		}
 	}
+	
 }

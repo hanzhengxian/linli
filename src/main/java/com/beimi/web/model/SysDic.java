@@ -11,18 +11,22 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+/**
+ * 系统字典对象
+ * 
+ * @author
+ *
+ */
 @Entity
 @Table(name = "bm_sysdic")
 @org.hibernate.annotations.Proxy(lazy = false)
 public class SysDic  implements java.io.Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8699781935163431952L;
 	private String id ;
 	private String name ;
 	private String title = "pub";			
 	private String code ;
+	/** 租户ID */
 	private String orgi ;
 	private String ctype ;
 	private String parentid;
@@ -32,22 +36,25 @@ public class SysDic  implements java.io.Serializable {
 	private String catetype ;				
 	private String memo ;					
 	private String creater;
-	private boolean haschild ;				//修改用处，改为启用还是禁用了
-	private boolean discode ;				//是否显示code
+	/**　修改用处，改为启用还是禁用了 */
+	private boolean haschild ;				
+	/** 是否显示code */
+	private boolean discode ;				
 	private Date createtime;
 	private Date updatetime;
 	private int sortindex ;
 	private String dicid ;
-	
-	private String menutype ;				//菜单类型，顶部导航菜单， 左侧菜单
-	
-	private String rules ;					//角色要求 
+	/** 菜单类型，顶部导航菜单， 左侧菜单 */
+	private String menutype ;				
+	/** 角色要求 */
+	private String rules ;					 
 	
 	private String module ;
 	private String url ;
-	private String mlevel ;					//菜单级别， 一级 菜单， 二级菜单
-	
+	/** 菜单级别， 一级 菜单， 二级菜单 */
+	private String mlevel ;					
 	private boolean defaultvalue = false;
+	
 	@Id
 	@Column(length = 32)
 	@GeneratedValue(generator = "system-uuid")

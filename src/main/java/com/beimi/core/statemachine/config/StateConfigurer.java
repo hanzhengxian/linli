@@ -1,6 +1,15 @@
 package com.beimi.core.statemachine.config;
 
+/**
+ * 游戏状态配置接口
+ * 
+ * @author 
+ *
+ * @param <S>
+ * @param <E>
+ */
 public interface StateConfigurer<S, E> {
+	
 	/**
 	 * Specify a initial state {@code S}.
 	 *
@@ -16,8 +25,6 @@ public interface StateConfigurer<S, E> {
 	 * @return configurer for chaining
 	 */
 	StateConfigurer<S, E> state(S state);
-	
-	
 	
 	StateConfigurer<S, E> withStates() throws Exception;
 }

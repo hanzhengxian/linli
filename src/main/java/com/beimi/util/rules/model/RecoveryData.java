@@ -8,6 +8,12 @@ import com.beimi.core.engine.game.Message;
 import com.beimi.core.engine.game.impl.Banker;
 import com.beimi.core.engine.game.impl.UserBoard;
 
+/**
+ * 恢复数据
+ * 
+ * @author
+ *
+ */
 public class RecoveryData implements Message{
 	private String command ;
 	private String userid ;

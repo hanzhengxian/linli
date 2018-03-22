@@ -6,15 +6,20 @@ import com.beimi.core.engine.game.Message;
 import com.beimi.util.rules.model.Board;
 import com.beimi.util.rules.model.Player;
 
+/**
+ * 用户牌局
+ * 
+ * @author
+ *
+ */
 public class UserBoard implements Message,Serializable{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1224310911110772375L;
+	
 	private Player player ;
 	private Player[] players ;
 	private int deskcards ;	//剩下多少张牌
 	private String command ;
+	
 	/**
 	 * 发给玩家的牌，开启特权后可以将某个其他玩家的牌 显示出来
 	 * @param board

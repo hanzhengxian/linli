@@ -16,16 +16,23 @@ import com.beimi.web.model.GamePlayway;
 import com.beimi.web.model.GameRoom;
 import com.beimi.web.model.PlayUserClient;
 
+/**
+ * 麻将游戏发牌实现类
+ * 
+ * @author
+ *
+ */
 public class MaJiangGame implements ChessGame{
+	
 	/**
 	 * 开始麻将游戏 ， 麻将牌 生成规则（总共136张牌，还不会玩 带 春夏秋冬 梅兰竹菊 的玩法，暂不处理） ， 
-	 * 1~108:1万~9万小计 36 ， 1筒~9筒小计36，1条~9条小计36  0-107
-	 * 东南西北中发白  7*4 = 28张							 -4~-32,
+	 * 1~108:1万~9万小计 36 ， 1筒~9筒小计36，1条~9条小计36     0-107
+	 * 东南西北中发白  7*4 = 28张							   -4~-32,
 	 * 前端 癞子牌（宝牌） 统一 用 0 表示
 	 * 癞子牌确定规则：通常是 最后一张牌 牌面 +1
 	 * @return
 	 */
-	public Board process(List<PlayUserClient> playUsers , GameRoom gameRoom , GamePlayway playway ,String banker , int cardsnum){
+	public Board process(List<PlayUserClient> playUsers, GameRoom gameRoom, GamePlayway playway, String banker, int cardsnum){
 		Board board = new MaJiangBoard() ;
 		board.setCards(null);
 		List<Byte> temp = new ArrayList<Byte>(136) ;
@@ -40,6 +47,7 @@ public class MaJiangGame implements ChessGame{
 				temp.add(0 , (byte)i) ;
 			}
 		}
+		
 		/**
 		 * 洗牌次数，参数指定，建议洗牌次数 为1次，多次洗牌的随机效果更好，例如：7次
 		 */
@@ -50,17 +58,15 @@ public class MaJiangGame implements ChessGame{
 		for(int i=0 ; i<temp.size() ; i++){
 			cards[i] = temp.get(i) ;
 		}
-		board.setCards(cards);
 		
+		board.setCards(cards);
 		board.setRatio(2); 	//默认番 ： 2
 		
 		/**
 		 * 以下为定癞子牌(根据玩法需要)
 		 */
 		int random = (byte)new Random().nextInt(6) ;		//骰子 0~6
-		
 		board.setPosition(random);	
-		
 		
 		byte[] powerful = new byte[1];
 		if(cards[cards.length - 2] >=0){
@@ -92,6 +98,7 @@ public class MaJiangGame implements ChessGame{
 			}
 			players[inx++] = player ;
 		}
+		
 		/**
 		 * 切墩 ， 每次 4张， 发够 12张，然后再挑一张牌 ， 切墩 跳过了 骰子
 		 */
@@ -102,6 +109,7 @@ public class MaJiangGame implements ChessGame{
 				}
 			}
 		}
+		
 		/**
 		 * 挑牌，庄 挑 1
 		 */
@@ -113,11 +121,13 @@ public class MaJiangGame implements ChessGame{
 				players[i].getCards()[12] = temp.remove(0) ;
 			}
 		}
+		
 		for(Player tempPlayer : players){
 			Arrays.sort(tempPlayer.getCards());
 		}
 		board.setDeskcards(temp);	//待打 的麻将 牌
 		board.setRoom(gameRoom.getId());
+		
 		Player tempbanker = players[0];
 		if(!StringUtils.isBlank(banker)){
 			for(int i= 0 ; i<players.length ; i++){
@@ -129,9 +139,11 @@ public class MaJiangGame implements ChessGame{
 			
 		}
 		board.setPlayers(players);
+		
 		if(tempbanker!=null){
 			board.setBanker(tempbanker.getPlayuser());
 		}
+		
 		return board;
 	}
 

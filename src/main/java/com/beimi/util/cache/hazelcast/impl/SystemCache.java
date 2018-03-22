@@ -8,7 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.beimi.util.cache.CacheBean;
 import com.hazelcast.core.HazelcastInstance;
-
+/**
+ * 系统数据缓存
+ * 
+ * @author
+ *
+ */
 @Service("system_cache")
 public class SystemCache implements CacheBean{
 	

@@ -17,6 +17,14 @@ import com.beimi.core.statemachine.BeiMiStateMachine;
 import com.beimi.core.statemachine.config.StateConfigurer;
 import com.beimi.core.statemachine.config.StateMachineTransitionConfigurer;
 
+/**
+ * 麻将状态机配置
+ * 
+ * @author showlike
+ *
+ * @param <T>
+ * @param <S>
+ */
 @Configuration
 public class BeiMiMaJiangStateMachineConfig<T, S>  {
 	
@@ -25,6 +33,7 @@ public class BeiMiMaJiangStateMachineConfig<T, S>  {
 		BeiMiStateMachine<String,String> beiMiStateMachine = new BeiMiStateMachine<String,String>();
 		this.configure(beiMiStateMachine.getConfig());
 		this.configure(beiMiStateMachine.getTransitions());
+		
 		return beiMiStateMachine;
 	}
 	

@@ -6,10 +6,6 @@ import java.util.List;
 import com.beimi.core.engine.game.model.Type;
 
 public class BeiMiGame implements java.io.Serializable {
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private String id ;

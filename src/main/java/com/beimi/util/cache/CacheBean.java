@@ -3,7 +3,14 @@ package com.beimi.util.cache;
 import java.util.Collection;
 import java.util.concurrent.locks.Lock;
 
+/**
+ * 不同功能缓存接口
+ * [在线用户、]
+ * @author
+ *
+ */
 public interface CacheBean {
+	
 	/**
 	 * 
 	 */

@@ -12,11 +12,13 @@ import com.beimi.util.rules.model.DuZhuBoard;
 import com.beimi.web.model.GameRoom;
 
 /**
- * 凑够了，开牌
+ * 出牌action
+ * 
  * @author iceworld
  *
  */
 public class PlayCardsAction<T,S> implements Action<T, S>{
+	
 	@Override
 	public void execute(Message<T> message , BeiMiExtentionTransitionConfigurer<T,S> configurer) {
 		String room = (String)message.getMessageHeaders().getHeaders().get("room") ;

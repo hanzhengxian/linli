@@ -47,25 +47,42 @@ import com.beimi.web.service.repository.jpa.GamePlaywayGroupRepository;
 import com.beimi.web.service.repository.jpa.GamePlaywayRepository;
 import com.corundumstudio.socketio.SocketIOClient;
 
+/**
+ * 游戏支持工具类
+ * 
+ * @author
+ *
+ */
 public class GameUtils {
-	
 	private static Map<String,ChessGame> games = new HashMap<String,ChessGame>();
+	
 	static{
 		games.put("dizhu", new DizhuGame()) ;
 		games.put("majiang", new MaJiangGame()) ;
 	}
 	
+	/**
+	 * 获得具体游戏实现对象
+	 * <p>
+	 * 具体配置详见：{@link com.beimi.config.web.BeiMiStateMachineHandlerConfig}
+	 * 
+	 * @param playway
+	 * @param orgi
+	 * @return
+	 */
 	public static Game getGame(String playway ,String orgi){
 		GamePlayway gamePlayway = (GamePlayway) CacheHelper.getSystemCacheBean().getCacheObject(playway, orgi) ;
+		
 		Game game = null ;
 		if(gamePlayway!=null){
-			SysDic dic = (SysDic) CacheHelper.getSystemCacheBean().getCacheObject(gamePlayway.getGame(), gamePlayway.getOrgi()) ;
+			SysDic dic = (SysDic)CacheHelper.getSystemCacheBean().getCacheObject(gamePlayway.getGame(), gamePlayway.getOrgi()) ;
 			if(dic.getCode().equals("dizhu") || gamePlayway.getCode().equals("dizhu")){
-				game = (Game) BMDataContext.getContext().getBean("dizhuGame") ;
+				game = (Game) BMDataContext.getContext().getBean("dizhuGame");
 			}else if(dic.getCode().equals("majiang") || gamePlayway.getCode().equals("majiang")){
-				game = (Game) BMDataContext.getContext().getBean("majiangGame") ;
+				game = (Game) BMDataContext.getContext().getBean("majiangGame");
 			}
 		}
+
 		return game;
 	}
 	
@@ -80,35 +97,35 @@ public class GameUtils {
 	
 	/**
 	 * 更新玩家状态
+	 * 
 	 * @param userid
 	 * @param orgi
 	 */
 	public static void updatePlayerClientStatus(String userid , String orgi , String status){
 		PlayUserClient playUser = (PlayUserClient) CacheHelper.getApiUserCacheBean().getCacheObject(userid, orgi) ;
-		if(playUser!=null){
-			playUser.setPlayertype(status);//托管玩家
-			CacheHelper.getApiUserCacheBean().put(userid,playUser , orgi);
+		if(playUser != null){
+			playUser.setPlayertype(status);
+			CacheHelper.getApiUserCacheBean().put(userid, playUser, orgi);
 			
-			if(playUser!=null && !BMDataContext.GameStatusEnum.PLAYING.toString().equals(playUser.getGamestatus())){
+			if(playUser != null 
+					&& !BMDataContext.GameStatusEnum.PLAYING.toString().equals(playUser.getGamestatus())){
 				playUser = (PlayUserClient) CacheHelper.getGamePlayerCacheBean().getPlayer(userid, orgi) ;
-				CacheHelper.getGamePlayerCacheBean().delete(userid, orgi) ;
-				CacheHelper.getRoomMappingCacheBean().delete(userid, orgi) ;
 				
-				/**
-				 * 检查，如果房间没 真人玩家了或者当前玩家是房主 ，就可以解散房间了
-				 */
+				CacheHelper.getGamePlayerCacheBean().delete(userid, orgi);
+				CacheHelper.getRoomMappingCacheBean().delete(userid, orgi);
+				
+				// 检查，如果房间没真人玩家了并且当前玩家是房主 ，就可以解散房间了
 				if(playUser!= null && !StringUtils.isBlank(playUser.getRoomid())){
 					GameRoom gameRoom = (GameRoom) CacheHelper.getGameRoomCacheBean().getCacheObject(playUser.getRoomid(), orgi) ;
 					if(gameRoom.getMaster().equals(playUser.getId())){
-						/**
-						 * 解散房间，应该需要一个专门的 方法来处理，别直接删缓存了，这样不好！！！
-						 */
+						// 解散房间，应该需要一个专门的 方法来处理，别直接删缓存了，这样不好！！！
 						BMDataContext.getGameEngine().dismissRoom(gameRoom, userid, orgi);
 					}
 				}
 			}
 		}
 	}
+	
 	public static Message subsidyPlayerClient(SocketIOClient client , PlayUserClient playUser , String orgi) {
 		Message message = null ;
 		if(playUser!=null){
@@ -194,9 +211,18 @@ public class GameUtils {
 	public static PlayUserClient create(PlayUser player,String playertype) {
 		return create(player, null , null , playertype) ;
 	}
+	
 	/**
-	 * 开始游戏，根据玩法创建游戏 对局
-	 * @return
+	 * 开始游戏，根据玩法创建游戏对局
+	 * <p>
+	 * [根据玩法发牌]
+	 * 
+	 * @param playUsers		房间游戏用户
+	 * @param gameRoom		房间
+	 * @param banker		
+	 * @param cardsnum		牌张数
+	 * 
+	 * @return {@link Board}
 	 */
 	public static Board playGame(List<PlayUserClient> playUsers , GameRoom gameRoom , String banker , int cardsnum){
 		Board board = null ;
@@ -207,6 +233,7 @@ public class GameUtils {
 				board = chessGame.process(playUsers, gameRoom, gamePlayWay , banker, cardsnum);
 			}
 		}
+		
 		return board;
 	}
 	
@@ -221,12 +248,19 @@ public class GameUtils {
 		return create(player, ipdata, request, BMDataContext.PlayerTypeEnum.NORMAL.toString()) ;
 	}
 	
+	/**
+	 * 反转牌的排序为大牌在前
+	 * 
+	 * @param cards
+	 * @return
+	 */
 	public static byte[] reverseCards(byte[] cards) {  
 		byte[] target_cards = new byte[cards.length];  
 		for (int i = 0; i < cards.length; i++) {  
 			// 反转后数组的第一个元素等于源数组的最后一个元素：  
 			target_cards[i] = cards[cards.length - i - 1];  
 		}  
+		
 		return target_cards;  
 	}  
 	

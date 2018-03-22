@@ -11,19 +11,22 @@ import com.beimi.util.cache.CacheHelper;
 import com.beimi.web.model.GameRoom;
 
 /**
- * 凑够了，开牌
+ * 凑够了人，开牌
+ * 
  * @author iceworld
  *
  */
 public class EnoughAction<T,S> implements Action<T, S>{
+	
 	@Override
 	public void execute(Message<T> message , BeiMiExtentionTransitionConfigurer<T,S> configurer) {
 		String room = (String)message.getMessageHeaders().getHeaders().get("room") ;
 		if(!StringUtils.isBlank(room)){
 			GameRoom gameRoom = (GameRoom) CacheHelper.getGameRoomCacheBean().getCacheObject(room, BMDataContext.SYSTEM_ORGI) ; 
-			if(gameRoom!=null){
+			if(gameRoom != null){
 				CacheHelper.getExpireCache().put(gameRoom.getRoomid(), new CreateBeginTask(1 , gameRoom , gameRoom.getOrgi()));
 			}
 		}
 	}
+	
 }

@@ -9,6 +9,12 @@ import org.springframework.stereotype.Service;
 import com.beimi.util.cache.CacheBean;
 import com.hazelcast.core.HazelcastInstance;
 
+/**
+ * 在线用户缓存
+ * 
+ * @author
+ *
+ */
 @Service("online_cache")
 public class OnlineCache implements CacheBean{
 	
