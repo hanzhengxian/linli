@@ -10,10 +10,6 @@ import com.beimi.core.engine.game.Message;
  *
  */
 public class ActionEvent implements Message , java.io.Serializable{
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8718778983090104033L;
 	
 	private String banker ;

@@ -2,6 +2,12 @@ package com.beimi.util.rules.model;
 
 import com.beimi.core.engine.game.Message;
 
+/**
+ * 发牌数据对象
+ * 
+ * @author
+ *
+ */
 public class DealCard implements Message{
 	private String command ;
 	private String userid ;

@@ -1,10 +1,14 @@
 package com.beimi.util.rules.model;
 
+/**
+ * 打牌动作对象
+ * 
+ * @author
+ *
+ */
 public class Action implements java.io.Serializable{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8077510029073026136L;
+	
 	private byte card ;
 	private String action ;
 	private String type ;			//动作类型， 杠 ： 明杠|暗杠|弯杠  ，  胡：胡法

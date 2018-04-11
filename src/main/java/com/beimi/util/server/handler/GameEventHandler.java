@@ -159,7 +159,7 @@ public class GameEventHandler
     /**
      * 判断游戏状态
      * [进入房间前请求]
-     * {"token":"308763e20d61441db23722e6da785343","orgi":"beimi"}
+     * {"token":"4ae810dad9784ee7bc54723d81752af1","orgi":"beimi"}
      * 
      * @param client
      * @param data
@@ -171,7 +171,9 @@ public class GameEventHandler
     	Token userToken ;
     	GameStatus gameStatus = new GameStatus() ;
     	gameStatus.setGamestatus(BMDataContext.GameStatusEnum.NOTREADY.toString());
-		if(beiMiClient!=null && !StringUtils.isBlank(beiMiClient.getToken()) && (userToken = (Token) CacheHelper.getApiUserCacheBean().getCacheObject(beiMiClient.getToken(), beiMiClient.getOrgi()))!=null){
+		if(beiMiClient!=null 
+				&& !StringUtils.isBlank(beiMiClient.getToken()) 
+				&& (userToken = (Token) CacheHelper.getApiUserCacheBean().getCacheObject(beiMiClient.getToken(), beiMiClient.getOrgi())) != null){
 			//鉴权完毕
 			PlayUserClient userClient = (PlayUserClient) CacheHelper.getApiUserCacheBean().getCacheObject(userToken.getUserid(), userToken.getOrgi()) ;
 			if(userClient!=null){
@@ -194,6 +196,8 @@ public class GameEventHandler
 		}else{
 			gameStatus.setGamestatus(BMDataContext.GameStatusEnum.TIMEOUT.toString());
 		}
+		System.out.println(JSON.toJSONString(gameStatus));
+		
 		client.sendEvent(BMDataContext.BEIMI_GAMESTATUS_EVENT, gameStatus);
     }
       
@@ -445,6 +449,9 @@ public class GameEventHandler
     public void onMessage(SocketIOClient client , String data)  
     {  
     	BeiMiClient beiMiClient = NettyClients.getInstance().getClient(client.getSessionId().toString()) ;
+    	if (beiMiClient == null) {
+			return ;
+		}
     	String token = beiMiClient.getToken();
 		if(!StringUtils.isBlank(token)){
 			Token userToken = (Token) CacheHelper.getApiUserCacheBean().getCacheObject(token, BMDataContext.SYSTEM_ORGI) ;

@@ -13,6 +13,7 @@ import com.beimi.core.engine.game.Message;
  */
 public class Player implements Message,java.io.Serializable , Cloneable{
 	private static final long serialVersionUID = 1L;
+	
 	/** userid对应 */
 	private String playuser;
 	/** 玩家手牌，顺序存储 ， 快速排序（4个Bit描述一张牌，玩家手牌 麻将 13+1/2 = 7 byte~=long） */

@@ -59,8 +59,8 @@ public class PlayUserClient implements UserEvent ,Message, java.io.Serializable 
 	private boolean roomready ;	
 	/** 明牌［是：true、否：false］*/
 	private boolean opendeal ;
-	
-	private String gamestatus ;	//玩家在游戏中的状态 ： READY : NOTREADY : PLAYING ：MANAGED/托管
+	/** 玩家在游戏中的状态 ： READY : NOTREADY : PLAYING ：MANAGED/托管 */
+	private String gamestatus ;
 	
 	private String playertype ;	//玩家类型 ： 玩家：托管玩家，AI
 	

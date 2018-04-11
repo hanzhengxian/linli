@@ -88,7 +88,7 @@
 	</appender>
 	
 	<!-- 用于打印 Spring 在启动的时候初始化各个 Bean 的信息 -->
-	<logger name="org.springframework.web" level="DEBUG"/>
+	<logger name="org.springframework.web" level="INFO"/>
 		
     <!-- 日志输出级别 -->
     <root level="INFO">

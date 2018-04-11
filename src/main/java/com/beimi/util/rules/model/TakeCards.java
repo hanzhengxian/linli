@@ -11,10 +11,6 @@ import com.beimi.core.engine.game.Message;
  *
  */
 public abstract class TakeCards implements Message , java.io.Serializable{
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8718778983090104033L;
 	
 	private String banker ;

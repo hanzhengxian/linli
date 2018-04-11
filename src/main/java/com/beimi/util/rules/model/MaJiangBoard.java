@@ -259,6 +259,7 @@ public class MaJiangBoard extends Board implements java.io.Serializable{
 	 */
 	public MJCardMessage checkMJCard(Player player , byte card , boolean deal){
 		MJCardMessage mjCard = GameUtils.processMJCard(player,player.getCards(), card , deal) ;
+		  
 		mjCard.setDeal(deal);
 		mjCard.setTakeuser(player.getPlayuser());
 		return mjCard ;
@@ -266,6 +267,7 @@ public class MaJiangBoard extends Board implements java.io.Serializable{
 	/**
 	 * 
 	 */
+	@Override
 	public void dealRequest(GameRoom gameRoom , Board board , String orgi , boolean reverse , String nextplayer) {
 		Player next = board.nextPlayer(board.index(board.getNextplayer().getNextplayer())) ;
 		if(!StringUtils.isBlank(nextplayer)){

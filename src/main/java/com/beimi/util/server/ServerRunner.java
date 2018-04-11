@@ -24,7 +24,7 @@ public class ServerRunner implements CommandLineRunner {
     @Autowired  
     public ServerRunner(SocketIOServer server) {  
         this.server = server;  
-        gameSocketNameSpace = server.addNamespace(BMDataContext.NameSpaceEnum.GAME.getNamespace())  ;
+        gameSocketNameSpace = server.addNamespace(BMDataContext.NameSpaceEnum.GAME.getNamespace());
     }
     
     @Bean(name="gameNamespace")

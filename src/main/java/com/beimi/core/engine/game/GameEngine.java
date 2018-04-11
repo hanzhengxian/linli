@@ -81,7 +81,8 @@ public class GameEngine {
 			 * 1、有新的玩家加入
 			 * 2、给当前新加入的玩家发送房间中所有玩家信息（不包含隐私信息，根据业务需求，修改PlayUserClient的字段，剔除掉隐私信息后发送）
 			 */
-			ActionTaskUtils.sendEvent("joinroom", new JoinRoom(userClient, gameEvent.getIndex(), gameEvent.getGameRoom().getPlayers() , gameEvent.getGameRoom()) , gameEvent.getGameRoom());
+			ActionTaskUtils.sendEvent("joinroom", new JoinRoom(userClient, gameEvent.getIndex(), 
+					gameEvent.getGameRoom().getPlayers() , gameEvent.getGameRoom()) , gameEvent.getGameRoom());
 			// 发送给单一玩家的消息
 			ActionTaskUtils.sendPlayers(beiMiClient, gameEvent.getGameRoom());
 			
